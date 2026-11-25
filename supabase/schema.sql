@@ -126,8 +126,13 @@ begin
 end;
 $$;
 
+-- สิทธิ์ระดับตาราง (RLS ด้านบนยังคุมให้เฉพาะแอดมินเท่านั้น)
+revoke all on public.customers, public.bills, public.admins from anon;
+grant select, insert, update, delete on public.customers, public.bills to authenticated;
+grant select on public.admins to authenticated;
+
 revoke all on function public.lookup_debt(text)          from public;
-revoke all on function public.generate_month_bills(text) from public;
+revoke all on function public.generate_month_bills(text) from public, anon;
 revoke all on function public.is_admin()                 from public;
 grant execute on function public.lookup_debt(text)          to anon, authenticated;
 grant execute on function public.generate_month_bills(text) to authenticated;
