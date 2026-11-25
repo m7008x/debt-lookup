@@ -5,6 +5,7 @@
 // Project Settings → API มาใส่ด้านล่าง (ดูขั้นตอนใน README.md)
 window.APP_CONFIG = {
   SITE_NAME: "ระบบตรวจสอบยอดค้างชำระ",
-  SUPABASE_URL: "",
-  SUPABASE_ANON_KEY: "",
+  SUPABASE_URL: "https://jvdfdbdvyhmlernhvflc.supabase.co",
+  // publishable key ใส่ในเว็บได้ (ตารางถูกล็อกด้วย Row Level Security)
+  SUPABASE_ANON_KEY: "sb_publishable_Qd7VnRUAN-fAQP0fwPD9RQ_KBuNZALW",
 };
