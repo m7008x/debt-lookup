@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <title>ผู้ดูแลระบบ · ตรวจสอบยอดค้างชำระ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="demoBanner" class="demo-banner hidden">
+    โหมดทดลอง — เข้าสู่ระบบด้วย <b>admin@demo.com</b> / <b>admin1234</b> · ข้อมูลเก็บในเบราว์เซอร์นี้เท่านั้น
+    <button class="btn ghost small" id="resetDemo" style="margin-left:8px">รีเซ็ตข้อมูลตัวอย่าง</button>
+  </div>
+  <header class="topbar">
+    <div class="inner">
+      <a class="logo" href="index.html"><span class="logo-mark">฿</span><span>ผู้ดูแลระบบ</span></a>
+      <nav>
+        <a class="btn ghost small" href="index.html">หน้าผู้ใช้</a>
+        <button class="btn ghost small hidden" id="logoutBtn">ออกจากระบบ</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- เข้าสู่ระบบ -->
+  <main class="wrap" id="loginView">
+    <section class="card" style="max-width:420px;margin:30px auto">
+      <h2>เข้าสู่ระบบผู้ดูแล</h2>
+      <p class="sub">สำหรับเจ้าหน้าที่เท่านั้น</p>
+      <form id="loginForm">
+        <div class="field"><label for="email">อีเมล</label><input id="email" type="email" required autocomplete="username" /></div>
+        <div class="field"><label for="password">รหัสผ่าน</label><input id="password" type="password" required autocomplete="current-password" /></div>
+        <button class="btn" style="width:100%" type="submit" id="loginBtn">เข้าสู่ระบบ</button>
+      </form>
+      <div id="loginMsg" class="msg hidden"></div>
+    </section>
+  </main>
+
+  <!-- แดชบอร์ด -->
+  <main class="wrap wide hidden" id="adminView">
+    <div class="stats">
+      <div class="stat"><div class="k">ลูกหนี้ทั้งหมด</div><div class="v" id="stCount">0</div></div>
+      <div class="stat red"><div class="k">ยอดค้างชำระรวม (บาท)</div><div class="v" id="stDue">0</div></div>
+      <div class="stat"><div class="k">จำนวนคนที่ค้างชำระ</div><div class="v" id="stDebtors">0</div></div>
+      <div class="stat"><div class="k">รับชำระแล้วรวม (บาท)</div><div class="v" id="stPaid">0</div></div>
+    </div>
+
+    <section class="card">
+      <div class="toolbar">
+        <input id="q" type="search" placeholder="ค้นหาชื่อหรือเบอร์โทร..." />
+        <select id="filter" style="width:auto">
+          <option value="all">ทั้งหมด</option>
+          <option value="due">เฉพาะที่ค้างชำระ</option>
+          <option value="clear">จ่ายครบแล้ว</option>
+        </select>
+        <button class="btn ghost" id="genBtn">ออกบิลประจำเดือน</button>
+        <button class="btn" id="addBtn">+ เพิ่มลูกหนี้</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ชื่อ</th><th>เบอร์โทร</th><th class="num">ยอดต่อเดือน</th>
+              <th>เดือนที่ค้าง</th><th class="num">ยอดค้างรวม</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="custRows"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- หน้าต่างลูกหนี้ -->
+  <div class="modal-bg hidden" id="custModal">
+    <div class="modal">
+      <div class="modal-head"><h3 id="custTitle">เพิ่มลูกหนี้</h3><button class="x" data-close>&times;</button></div>
+      <form id="custForm">
+        <div class="row">
+          <div class="field"><label>ชื่อ-นามสกุล</label><input id="cName" required /></div>
+          <div class="field"><label>เบอร์โทร</label><input id="cPhone" type="tel" inputmode="numeric" required /></div>
+        </div>
+        <div class="row">
+          <div class="field"><label>ยอดบิลต่อเดือน (บาท)</label><input id="cMonthly" type="number" min="0" step="0.01" value="0" /></div>
+          <div class="field"><label>หมายเหตุ</label><input id="cNote" /></div>
+        </div>
+        <label class="check"><input type="checkbox" id="cActive" checked /> ใช้งานอยู่ (รวมในการออกบิลประจำเดือน)</label>
+        <div class="actions">
+          <button type="button" class="btn danger hidden" id="delCust">ลบลูกหนี้</button>
+          <button type="submit" class="btn">บันทึก</button>
+        </div>
+      </form>
+      <div id="custMsg" class="msg hidden"></div>
+
+      <div id="billSection" class="hidden">
+        <div class="section-title"><span>บิลรายเดือน</span><span class="small-muted" id="billSummary"></span></div>
+        <form id="billForm" class="row" style="align-items:flex-end">
+          <div class="field"><label>เดือน</label><input id="bMonth" type="month" required /></div>
+          <div class="field"><label>ยอด (บาท)</label><input id="bAmount" type="number" min="0" step="0.01" required /></div>
+          <div class="field" style="flex:0"><button class="btn" type="submit">+ เพิ่มบิล</button></div>
+        </form>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>เดือน</th><th class="num">ยอด</th><th>สถานะ</th><th></th></tr></thead>
+            <tbody id="billRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- หน้าต่างออกบิลประจำเดือน -->
+  <div class="modal-bg hidden" id="genModal">
+    <div class="modal narrow">
+      <div class="modal-head"><h3>ออกบิลประจำเดือน</h3><button class="x" data-close>&times;</button></div>
+      <p class="sub">สร้างบิล "ค้างชำระ" ให้ลูกหนี้ทุกคนที่ใช้งานอยู่ ตามยอดต่อเดือนของแต่ละคน (คนที่มีบิลเดือนนั้นแล้วจะข้ามไป)</p>
+      <form id="genForm">
+        <div class="field"><label>เดือน</label><input id="gMonth" type="month" required /></div>
+        <div class="actions"><button class="btn" type="submit">ออกบิล</button></div>
+      </form>
+      <div id="genMsg" class="msg hidden"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

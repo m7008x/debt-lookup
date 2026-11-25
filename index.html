@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ตรวจสอบยอดค้างชำระ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="demoBanner" class="demo-banner hidden">
+    โหมดทดลอง — ลองค้นหาเบอร์ <b>0812345678</b>, <b>0899999999</b> หรือ <b>0861112222</b>
+  </div>
+  <header class="topbar">
+    <div class="inner">
+      <a class="logo" href="index.html"><span class="logo-mark">฿</span><span id="siteName">ระบบตรวจสอบยอดค้างชำระ</span></a>
+      <nav><a class="btn ghost small" href="admin.html">ผู้ดูแลระบบ</a></nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="card">
+      <h2>ตรวจสอบยอดค้างชำระ</h2>
+      <p class="sub">กรอกเบอร์โทรศัพท์ที่ลงทะเบียนไว้ เพื่อดูยอดที่ต้องชำระและประวัติการจ่ายบิล</p>
+      <form id="searchForm" class="search-row" autocomplete="off">
+        <input id="phone" type="tel" inputmode="numeric" maxlength="13" placeholder="เช่น 0812345678" required />
+        <button class="btn" type="submit" id="searchBtn">ตรวจสอบ</button>
+      </form>
+      <div id="msg" class="msg hidden"></div>
+    </section>
+
+    <div id="result" class="hidden">
+      <section class="card">
+        <div class="who">
+          <div>
+            <div class="name" id="rName"></div>
+            <div class="phone" id="rPhone"></div>
+          </div>
+          <span class="small-muted" id="rChecked"></span>
+        </div>
+        <div id="dueBox" class="due-box">
+          <div class="label" id="dueLabel"></div>
+          <div class="amount" id="dueAmount"></div>
+          <div class="note" id="dueNote"></div>
+        </div>
+        <div id="unpaidWrap" class="hidden">
+          <div class="section-title">เดือนที่ค้างชำระ</div>
+          <div class="chips" id="unpaidChips"></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>ประวัติบิล</h2>
+        <p class="sub" id="historySub"></p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>เดือน</th><th class="num">ยอดบิล (บาท)</th><th>สถานะ</th><th>วันที่ชำระ</th></tr>
+            </thead>
+            <tbody id="billRows"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <footer>หากข้อมูลไม่ถูกต้อง กรุณาติดต่อผู้ดูแล</footer>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/user.js"></script>
+</body>
+</html>
